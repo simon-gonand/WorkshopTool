@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class MapProfile : ScriptableObject
 {
-    
+    public int width;
+    public int height;
 }
