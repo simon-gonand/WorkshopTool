@@ -44,6 +44,8 @@ public class CreateMapProfileWindow : EditorWindow
             MapProfile newProfile = new MapProfile();
             newProfile.width = (int)mapScript.transform.lossyScale.x;
             newProfile.height = (int)mapScript.transform.lossyScale.z;
+            newProfile.cells = new CellType[newProfile.width * newProfile.height];
+            newProfile.cellTypeColors = new Color[5] { Color.white, Color.black, Color.red, Color.cyan, Color.yellow };
             profile.objectReferenceValue = newProfile;
             if (profileName == "")
             {
