@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
-    MapProfile mapProfile;
+    public MapProfile mapProfile;
 
     public static Map instance;
 
