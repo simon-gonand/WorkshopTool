@@ -108,11 +108,11 @@ public class MapProfileWindow : EditorWindow
         EditorGUILayout.Space();
         Rect nextRect = EditorGUILayout.GetControlRect();
 
-        float totalWidth = EditorGUIUtility.currentViewWidth;
         float sumSpaceWidth = widthSpace * currentProfile.width;
+        float totalWidth = EditorGUIUtility.currentViewWidth - sumSpaceWidth;       
         float gridWidth = totalWidth * (1f - 2f * marginRatio);
         float cellWidth = gridWidth / currentProfile.width;
-        float sumSpaceHeight = currentProfile.height * heightSpace + sumSpaceWidth;
+        float sumSpaceHeight = currentProfile.height * heightSpace;
         float totalHeight = currentProfile.height * cellHeight + sumSpaceHeight;
 
         Rect gridMap = new Rect(totalWidth * marginRatio, nextRect.y, gridWidth, totalHeight);
