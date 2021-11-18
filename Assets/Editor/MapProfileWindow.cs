@@ -6,6 +6,7 @@ using UnityEngine;
 public class MapProfileWindow : EditorWindow
 {
     private MapProfile currentProfile;
+    private Map currentMap;
 
     private float marginRatio = 0.05f;  
     private float heightSpace = 5.0f;
@@ -23,6 +24,8 @@ public class MapProfileWindow : EditorWindow
     {
         currentProfile = profile;
         currentProfile.currentCellType = CellType.Void;
+
+        currentMap = Object.FindObjectOfType<Map>() as Map;
 
         isVoid = true;
         isWall = false;
@@ -95,31 +98,26 @@ public class MapProfileWindow : EditorWindow
                 currentProfile.cells[i] = CellType.Void;
                 int x = i / currentProfile.height;
                 int y = i - (x * currentProfile.height);
-                UpdateScene(x, y, CellType.Void);
+                UpdateScene(x, y, CellType.Void, currentProfile);
             }
         }
     }
 
-    private Vector3 GetPositionOnScene(int i, int j)
+    private static Vector3 GetPositionOnScene(int i, int j, MapProfile currentProfile)
     {
         int originX = i - currentProfile.width / 2;
         int originY = -j + currentProfile.height / 2;
         return new Vector3(originX + 0.5f, 0.0f, originY - 0.5f);
     }
 
-    private void UpdateScene(int i, int j, CellType cellType)
+    public static void UpdateScene(int i, int j, CellType cellType, MapProfile currentProfile)
     {
-        Vector3 position = GetPositionOnScene(i, j);
+        Vector3 position = GetPositionOnScene(i, j, currentProfile);
         GameObject map = (Object.FindObjectOfType<Map>() as Map).gameObject;
         Transform[] environments = map.GetComponentsInChildren<Transform>();
         bool canInstantiate = true;
         foreach (Transform t in environments)
         {
-            if (cellType == CellType.Void && t.CompareTag("Player"))
-            {
-                //Debug.Log(t.position.x + " " + position.x);
-                //Debug.Log(t.position.z + " " + position.z);
-            }
             if (Mathf.Approximately(t.position.x, position.x) && Mathf.Approximately(t.position.z, position.z))
             {
                 if (cellType != currentProfile.cells[j * currentProfile.height + i] 
@@ -214,7 +212,8 @@ public class MapProfileWindow : EditorWindow
                         currentProfile.cells[index] != CellType.SpawnerPlayer)
                         ResetSpawnerPlayerCell();
                     currentProfile.cells[index] = currentProfile.currentCellType;
-                    UpdateScene(j, i, currentProfile.cells[index]);
+                    if(currentMap.mapProfile == currentProfile)
+                        UpdateScene(j, i, currentProfile.cells[index], currentProfile);
                 }
                 EditorGUI.DrawRect(cell, currentProfile.cellTypeColors[(int)currentProfile.cells[index]]);
                 curX += cellWidth + widthSpace;

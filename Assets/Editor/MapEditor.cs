@@ -17,11 +17,33 @@ public class MapEditor : Editor
         mapScript = target as Map;
     }
 
+    private void ClearMap()
+    {
+        Transform[] environment = mapScript.gameObject.GetComponentsInChildren<Transform>();
+        foreach (Transform t in environment)
+        {
+            if (t.GetComponent<Map>()) continue;
+            DestroyImmediate(t.gameObject);
+        }
+    }
+
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
 
+        EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(profile);
+        if (EditorGUI.EndChangeCheck())
+        {
+            MapProfile mapProfile = profile.objectReferenceValue as MapProfile;
+            ClearMap();
+            for (int i = 0; i < mapProfile.cells.Length; ++i)
+            {
+                int x = i / mapProfile.height;
+                int y = i - (x * mapProfile.height);
+                MapProfileWindow.UpdateScene(x, y, mapProfile.cells[i], mapProfile);
+            }
+        }
 
         if (GUILayout.Button("Create a Profile"))
         {
