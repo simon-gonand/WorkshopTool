@@ -41,7 +41,7 @@ public class CreateMapProfileWindow : EditorWindow
 
         if (GUILayout.Button("Create Profile"))
         {
-            MapProfile newProfile = new MapProfile();
+            MapProfile newProfile = ScriptableObject.CreateInstance<MapProfile>();
             newProfile.width = (int)mapScript.transform.lossyScale.x;
             newProfile.height = (int)mapScript.transform.lossyScale.z;
             newProfile.cells = new CellType[newProfile.width * newProfile.height];
@@ -57,6 +57,13 @@ public class CreateMapProfileWindow : EditorWindow
                     AssetDatabase.CreateAsset(newProfile, "Assets/" + profileName + ".asset");
                 else
                     AssetDatabase.CreateAsset(newProfile, "Assets/" + path + "/" + profileName + ".asset");
+
+                Transform[] environment = mapScript.GetComponentsInChildren<Transform>();
+                foreach (Transform t in environment)
+                {
+                    if (t.GetComponent<Map>()) continue;
+                    DestroyImmediate(t.gameObject);
+                }
             }
         }
         serializedObject.ApplyModifiedPropertiesWithoutUndo();

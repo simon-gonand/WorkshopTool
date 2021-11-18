@@ -152,7 +152,6 @@ public class MapProfileWindow : EditorWindow
                     break;
                 default:
                     return;
-                    break;
             }
             if (obj == null) return;
             obj.transform.position = new Vector3(position.x, position.y, position.z);

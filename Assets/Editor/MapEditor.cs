@@ -17,13 +17,20 @@ public class MapEditor : Editor
         mapScript = target as Map;
     }
 
-    private void ClearMap()
+    private void RebuildMap()
     {
+        MapProfile mapProfile = profile.objectReferenceValue as MapProfile;
         Transform[] environment = mapScript.gameObject.GetComponentsInChildren<Transform>();
         foreach (Transform t in environment)
         {
             if (t.GetComponent<Map>()) continue;
             DestroyImmediate(t.gameObject);
+        }
+        for (int i = 0; i < mapProfile.cells.Length; ++i)
+        {
+            int x = i / mapProfile.height;
+            int y = i - (x * mapProfile.height);
+            MapProfileWindow.UpdateScene(x, y, mapProfile.cells[i], mapProfile);
         }
     }
 
@@ -35,14 +42,7 @@ public class MapEditor : Editor
         EditorGUILayout.PropertyField(profile);
         if (EditorGUI.EndChangeCheck())
         {
-            MapProfile mapProfile = profile.objectReferenceValue as MapProfile;
-            ClearMap();
-            for (int i = 0; i < mapProfile.cells.Length; ++i)
-            {
-                int x = i / mapProfile.height;
-                int y = i - (x * mapProfile.height);
-                MapProfileWindow.UpdateScene(x, y, mapProfile.cells[i], mapProfile);
-            }
+            RebuildMap();
         }
 
         if (GUILayout.Button("Create a Profile"))
