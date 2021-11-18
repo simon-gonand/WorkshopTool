@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 20
   height: 20
+  wallPrefab: {fileID: 5440744094831448110, guid: 768c3fc139b573746a796f7f3b359e16, type: 3}
+  enemySpawnerPrefab: {fileID: 6806111116957958455, guid: 0377338d373414e45a2e40d777a639ca, type: 3}
+  bonusesPrefab:
+  - {fileID: 2034477343064219473, guid: 0b5476069025db040973e9ec01d1d7dc, type: 3}
   currentCellType: 0
   cellTypeColors:
   - {r: 1, g: 1, b: 1, a: 1}

@@ -16,9 +16,13 @@ public class MapProfile : ScriptableObject
     public int width;
     public int height;
 
+    public GameObject wallPrefab;
+    public GameObject enemySpawnerPrefab;
+    public GameObject[] bonusesPrefab;
+
 #if UNITY_EDITOR
     public CellType currentCellType;
-#endif
     public Color[] cellTypeColors;
+#endif
     public CellType[] cells;
 }

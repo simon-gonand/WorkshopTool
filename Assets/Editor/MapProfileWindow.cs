@@ -29,7 +29,7 @@ public class MapProfileWindow : EditorWindow
         isSpawnerEnemies = false;
         isSpawnerPlayer = false;
         isBonus = false;
-}
+    }
 
     void ProcessEvents()
     {
@@ -91,7 +91,74 @@ public class MapProfileWindow : EditorWindow
         for (int i = 0; i < currentProfile.cells.Length; ++i)
         {
             if (currentProfile.cells[i] == CellType.SpawnerPlayer)
+            {
                 currentProfile.cells[i] = CellType.Void;
+                int x = i / currentProfile.height;
+                int y = i - (x * currentProfile.height);
+                UpdateScene(x, y, CellType.Void);
+            }
+        }
+    }
+
+    private Vector3 GetPositionOnScene(int i, int j)
+    {
+        int originX = i - currentProfile.width / 2;
+        int originY = -j + currentProfile.height / 2;
+        return new Vector3(originX + 0.5f, 0.0f, originY - 0.5f);
+    }
+
+    private void UpdateScene(int i, int j, CellType cellType)
+    {
+        Vector3 position = GetPositionOnScene(i, j);
+        GameObject map = (Object.FindObjectOfType<Map>() as Map).gameObject;
+        Transform[] environments = map.GetComponentsInChildren<Transform>();
+        bool canInstantiate = true;
+        foreach (Transform t in environments)
+        {
+            if (cellType == CellType.Void && t.CompareTag("Player"))
+            {
+                //Debug.Log(t.position.x + " " + position.x);
+                //Debug.Log(t.position.z + " " + position.z);
+            }
+            if (Mathf.Approximately(t.position.x, position.x) && Mathf.Approximately(t.position.z, position.z))
+            {
+                if (cellType != currentProfile.cells[j * currentProfile.height + i] 
+                    || cellType == CellType.Void)
+                {
+                    DestroyImmediate(t.gameObject);
+                }
+                else
+                    canInstantiate = false;
+            }
+        }
+        GameObject obj = null;
+        if (canInstantiate)
+        {
+            switch (cellType)
+            {
+                case CellType.Wall:
+                    obj = PrefabUtility.InstantiatePrefab(currentProfile.wallPrefab) as GameObject;
+                    position.y += obj.transform.localScale.y / 2;
+                    break;
+                case CellType.SpawnerEnemies:
+                    obj = PrefabUtility.InstantiatePrefab(currentProfile.enemySpawnerPrefab) as GameObject;
+                    position.y -= obj.transform.localScale.y - 0.05f;
+                    break;
+                case CellType.SpawnerPlayer:
+                    obj = new GameObject("PlayerSpawnPoint");
+                    obj.tag = "Player";
+                    break;
+                case CellType.Bonuses:
+                    obj = PrefabUtility.InstantiatePrefab(currentProfile.bonusesPrefab[0]) as GameObject;
+                    position.y += obj.transform.localScale.y / 2 + 0.25f;
+                    break;
+                default:
+                    return;
+                    break;
+            }
+            if (obj == null) return;
+            obj.transform.position = new Vector3(position.x, position.y, position.z);
+            obj.transform.SetParent(map.transform);
         }
     }
 
@@ -147,6 +214,7 @@ public class MapProfileWindow : EditorWindow
                         currentProfile.cells[index] != CellType.SpawnerPlayer)
                         ResetSpawnerPlayerCell();
                     currentProfile.cells[index] = currentProfile.currentCellType;
+                    UpdateScene(j, i, currentProfile.cells[index]);
                 }
                 EditorGUI.DrawRect(cell, currentProfile.cellTypeColors[(int)currentProfile.cells[index]]);
                 curX += cellWidth + widthSpace;
