@@ -10,7 +10,6 @@ public class MapProfileWindow : EditorWindow
     private float marginRatio = 0.05f;  
     private float heightSpace = 5.0f;
     private float widthSpace = 5.0f;
-    private float cellHeight = 30.0f;
 
     private bool isVoid;
     private bool isWall;
@@ -107,16 +106,23 @@ public class MapProfileWindow : EditorWindow
         GUILayout.EndHorizontal();
         EditorGUILayout.Space();
         Rect nextRect = EditorGUILayout.GetControlRect();
+        if (nextRect.y == 0) return;
 
+        // Define cell width to be responsive
         float sumSpaceWidth = widthSpace * currentProfile.width;
-        float totalWidth = EditorGUIUtility.currentViewWidth - sumSpaceWidth;       
+        float totalWidth = position.width - sumSpaceWidth;  
         float gridWidth = totalWidth * (1f - 2f * marginRatio);
         float cellWidth = gridWidth / currentProfile.width;
+
+        // Define cell height to be responsive
         float sumSpaceHeight = currentProfile.height * heightSpace;
-        float totalHeight = currentProfile.height * cellHeight + sumSpaceHeight;
+        float totalHeight = position.height - sumSpaceHeight - nextRect.y;
+        float gridHeight = totalHeight * (1f - 2f * marginRatio);
+        float cellHeight = gridHeight / currentProfile.height;
 
-        Rect gridMap = new Rect(totalWidth * marginRatio, nextRect.y, gridWidth, totalHeight);
+        Rect gridMap = new Rect(totalWidth * marginRatio, nextRect.y +  gridHeight * marginRatio, gridWidth, gridHeight);
 
+        // Draw grid
         float curY = gridMap.y;
         for (int i = 0; i < currentProfile.width; ++i)
         {
@@ -125,10 +131,9 @@ public class MapProfileWindow : EditorWindow
             {
                 Rect cell = new Rect(curX, curY, cellWidth, cellHeight);
                 int index = j * currentProfile.height + i;
+                // If user is clicking on one cell then he is 
                 if (isClick && cell.Contains(Event.current.mousePosition))
                 {
-                    Debug.Log("Cell at " + curY + " finish at " + (curY + cellHeight));
-                    Debug.Log("MousePos " + Event.current.mousePosition.y);
                     currentProfile.cells[index] = currentProfile.currentCellType;
                 }
                 EditorGUI.DrawRect(cell, currentProfile.cellTypeColors[(int)currentProfile.cells[index]]);
@@ -136,6 +141,7 @@ public class MapProfileWindow : EditorWindow
             }
             curY += cellHeight + heightSpace;
         }
+        Repaint();
         EditorUtility.SetDirty(currentProfile);
     }
 }

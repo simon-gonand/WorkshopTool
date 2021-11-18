@@ -305,7 +305,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-7336
+  m_Name: pb_Mesh17044
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -488,11 +488,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7208908173469739851, guid: 50c1eced266e88746849f1e932d8f2b9, type: 3}
       propertyPath: m_LocalScale.x
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7208908173469739851, guid: 50c1eced266e88746849f1e932d8f2b9, type: 3}
       propertyPath: m_LocalScale.z
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7208908173469739851, guid: 50c1eced266e88746849f1e932d8f2b9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -557,4 +557,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aef797e1d90f2e24f852ae6d07f37a3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapProfile: {fileID: 11400000, guid: 7983a02f031d0194c801299913fc223f, type: 2}
+  mapProfile: {fileID: 11400000, guid: fdb3d408c505a0c44a7449758d15843f, type: 2}
