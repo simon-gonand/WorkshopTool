@@ -19,8 +19,6 @@ public class MapProfileWindow : EditorWindow
 
     private bool isClick;
 
-
-
     public void InitializeWindow(MapProfile profile)
     {
         currentProfile = profile;
@@ -88,6 +86,15 @@ public class MapProfileWindow : EditorWindow
         }
     }
 
+    private void ResetSpawnerPlayerCell()
+    {
+        for (int i = 0; i < currentProfile.cells.Length; ++i)
+        {
+            if (currentProfile.cells[i] == CellType.SpawnerPlayer)
+                currentProfile.cells[i] = CellType.Void;
+        }
+    }
+
     private void OnGUI()
     {
         ProcessEvents();
@@ -101,9 +108,11 @@ public class MapProfileWindow : EditorWindow
         isBonus = GUILayout.Toggle(isBonus, "Bonus");
         if (EditorGUI.EndChangeCheck())
         {
+            // To have only one toggle checked
             CheckToggleStates();
         }
         GUILayout.EndHorizontal();
+
         EditorGUILayout.Space();
         Rect nextRect = EditorGUILayout.GetControlRect();
         if (nextRect.y == 0) return;
@@ -134,6 +143,9 @@ public class MapProfileWindow : EditorWindow
                 // If user is clicking on one cell then he is 
                 if (isClick && cell.Contains(Event.current.mousePosition))
                 {
+                    if (currentProfile.currentCellType == CellType.SpawnerPlayer && 
+                        currentProfile.cells[index] != CellType.SpawnerPlayer)
+                        ResetSpawnerPlayerCell();
                     currentProfile.cells[index] = currentProfile.currentCellType;
                 }
                 EditorGUI.DrawRect(cell, currentProfile.cellTypeColors[(int)currentProfile.cells[index]]);
