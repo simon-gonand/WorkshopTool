@@ -23,18 +23,23 @@ public class PlayerController : MonoBehaviour
         movements = context.ReadValue<Vector2>();
     }
 
-    public void OnCameraMove(InputAction.CallbackContext context)
+    public void OnMouseMovedX(InputAction.CallbackContext context)
     {
-        cameraMovements += context.ReadValue<Vector2>();
-        //cameraMovements.x = Mathf.Clamp(cameraMovements.x, -60f, 60f);
-        //cameraMovements.y = Mathf.Clamp(cameraMovements.y, -60f, 60f);
+        cameraMovements.x = context.ReadValue<float>();
+    }
+
+    public void OnMouseMovedY(InputAction.CallbackContext context)
+    {
+        cameraMovements.y += context.ReadValue<float>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         selfRigidbody.velocity = new Vector3(movements.x, 0.0f, movements.y);
-        self.eulerAngles = new Vector3(0.0f, cameraMovements.x, 0.0f);
-        cam.eulerAngles = new Vector3(-cameraMovements.y, 0.0f, 0.0f);
+
+        self.Rotate(Vector3.up * cameraMovements.x);
+        cam.localRotation = Quaternion.Euler(movements.y, 0.0f, 0.0f);
+        
     }
 }

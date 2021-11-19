@@ -18,7 +18,7 @@ MonoBehaviour:
   enemySpawnerPrefab: {fileID: 6806111116957958455, guid: 0377338d373414e45a2e40d777a639ca, type: 3}
   bonusesPrefab:
   - {fileID: 2034477343064219473, guid: 0b5476069025db040973e9ec01d1d7dc, type: 3}
-  currentCellType: 4
+  currentCellType: 0
   cellTypeColors:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 0, g: 0, b: 0, a: 1}

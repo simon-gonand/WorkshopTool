@@ -14,10 +14,18 @@
                     "interactions": ""
                 },
                 {
-                    "name": "CameraMovements",
+                    "name": "CameraMovementsX",
                     "type": "PassThrough",
                     "id": "26b21aae-7231-414d-9245-a4cef35c3a60",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "CameraMovementsY",
+                    "type": "PassThrough",
+                    "id": "37fb2d92-a54a-4a10-b1e3-1ef865f54c22",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": ""
                 }
@@ -80,12 +88,23 @@
                 },
                 {
                     "name": "",
-                    "id": "981c5237-d0a4-4cd9-98b2-bbf0d2b05760",
-                    "path": "<Mouse>/delta",
+                    "id": "0963f8ac-db47-4467-b619-b988504a0fda",
+                    "path": "<Mouse>/delta/x",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CameraMovements",
+                    "action": "CameraMovementsX",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e1dfa851-0d3c-4a58-9b41-c645645b40ed",
+                    "path": "<Mouse>/delta/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraMovementsY",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
