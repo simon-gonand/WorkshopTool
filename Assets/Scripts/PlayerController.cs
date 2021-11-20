@@ -9,6 +9,11 @@ public class PlayerController : MonoBehaviour
     public Rigidbody selfRigidbody;
     public Transform cam;
 
+    [Range(0, 1)]
+    public float sensivityX;
+    [Range(0, 1)]
+    public float sensivityY;
+
     private Vector2 movements = Vector2.zero;
     private Vector2 cameraMovements = Vector2.zero;
     // Start is called before the first frame update
@@ -25,12 +30,13 @@ public class PlayerController : MonoBehaviour
 
     public void OnMouseMovedX(InputAction.CallbackContext context)
     {
-        cameraMovements.x = context.ReadValue<float>();
+        cameraMovements.x = context.ReadValue<float>() * sensivityX;
     }
 
     public void OnMouseMovedY(InputAction.CallbackContext context)
     {
-        cameraMovements.y += context.ReadValue<float>();
+        cameraMovements.y -= context.ReadValue<float>() * sensivityY;
+        cameraMovements.y = Mathf.Clamp(cameraMovements.y, -60.0f, 60.0f);
     }
 
     // Update is called once per frame
@@ -39,7 +45,6 @@ public class PlayerController : MonoBehaviour
         selfRigidbody.velocity = new Vector3(movements.x, 0.0f, movements.y);
 
         self.Rotate(Vector3.up * cameraMovements.x);
-        cam.localRotation = Quaternion.Euler(movements.y, 0.0f, 0.0f);
-        
+        cam.localRotation = Quaternion.Euler(cameraMovements.y, 0.0f, 0.0f);
     }
 }

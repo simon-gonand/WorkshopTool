@@ -1137,6 +1137,8 @@ MonoBehaviour:
   self: {fileID: 246336363}
   selfRigidbody: {fileID: 246336366}
   cam: {fileID: 963194228}
+  sensivityX: 0.323
+  sensivityY: 0.317
 --- !u!4 &246336363
 Transform:
   m_ObjectHideFlags: 0
