@@ -36,6 +36,11 @@ public class PlayerController : MonoBehaviour
         {
             bulletImpact.transform.position = hit.point;
             bulletImpact.transform.LookAt(self.position);
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                hit.collider.GetComponent<EthanBehaviour>().Die();
+            }
+
             bulletImpact.Play();
             StartCoroutine(Recoil());
         }
