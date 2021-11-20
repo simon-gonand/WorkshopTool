@@ -6,15 +6,16 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     public Transform self;
-    public Rigidbody selfRigidbody;
     public Transform cam;
 
     [Range(0, 1)]
     public float sensivityX;
     [Range(0, 1)]
     public float sensivityY;
+    [Range(1, 10)]
+    public float speed = 1.0f;
 
-    private Vector2 movements = Vector2.zero;
+    private Vector2 movementInput = Vector2.zero;
     private Vector2 cameraMovements = Vector2.zero;
     // Start is called before the first frame update
     void Start()
@@ -25,7 +26,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        movements = context.ReadValue<Vector2>();
+        movementInput = context.ReadValue<Vector2>();
     }
 
     public void OnMouseMovedX(InputAction.CallbackContext context)
@@ -42,7 +43,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        selfRigidbody.velocity = new Vector3(movements.x, 0.0f, movements.y);
+        self.Translate(new Vector3(movementInput.x, 0.0f, movementInput.y) * speed * Time.deltaTime);
 
         self.Rotate(Vector3.up * cameraMovements.x);
         cam.localRotation = Quaternion.Euler(cameraMovements.y, 0.0f, 0.0f);
