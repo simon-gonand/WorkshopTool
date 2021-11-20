@@ -41,8 +41,15 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0.0f));
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 999.0f))
+        {
+            Debug.DrawLine(self.position, hit.point);
+        }
+
         self.Translate(new Vector3(movementInput.x, 0.0f, movementInput.y) * speed * Time.deltaTime);
 
         self.Rotate(Vector3.up * cameraMovements.x);
