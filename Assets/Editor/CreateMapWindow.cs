@@ -31,6 +31,7 @@ public class CreateMapWindow : EditorWindow
                 if (script == null) { 
                     go = PrefabUtility.InstantiatePrefab(prefabReference) as GameObject;
                     script = go.AddComponent<Map>();
+                    go.AddComponent<PoolManager>();
 
                     Undo.RegisterCreatedObjectUndo(go, "Create map");
                 }

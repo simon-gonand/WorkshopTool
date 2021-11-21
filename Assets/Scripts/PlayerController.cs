@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     public Transform self;
     public Transform cam;
+    public Collider selfCollider;
     public ParticleSystem bulletImpact;
 
     [Range(0, 1)]
@@ -15,34 +17,49 @@ public class PlayerController : MonoBehaviour
     public float sensivityY;
     [Range(1, 10)]
     public float speed = 1.0f;
+    public float fireRate = 1.0f;
 
     private Vector2 movementInput = Vector2.zero;
     private Vector2 cameraMovements = Vector2.zero;
     private Vector3 camOriginalPos;
-    
+
+    private float nextFire = 0.0f;
+
+    public static PlayerController instance;
+
+    private void Awake()
+    {
+        if (instance) Destroy(this.gameObject);
+        else instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         Transform spawn = GameObject.FindGameObjectWithTag("Player").transform;
         self.position = new Vector3(spawn.position.x, self.position.y, spawn.position.z);
         camOriginalPos = cam.localPosition;
+        Cursor.visible = false;
     }
 
     public void OnFire(InputAction.CallbackContext context)
     {
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0.0f));
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 999.0f))
-        {
-            bulletImpact.transform.position = hit.point;
-            bulletImpact.transform.LookAt(self.position);
-            if (hit.collider.CompareTag("Enemy"))
+        if (!GameManager.instance.isEndGame && nextFire < Time.time) {
+            Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0.0f));
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 999.0f))
             {
-                hit.collider.GetComponent<EthanBehaviour>().Die();
-            }
+                bulletImpact.transform.position = hit.point;
+                bulletImpact.transform.LookAt(self.position);
+                if (hit.collider.CompareTag("Enemy"))
+                {
+                    hit.collider.GetComponent<EthanBehaviour>().Die();
+                }
 
-            bulletImpact.Play();
-            StartCoroutine(Recoil());
+                bulletImpact.Play();
+                StartCoroutine(Recoil());
+            }
+            nextFire = Time.time + fireRate;
         }
     }
 
@@ -62,18 +79,28 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        movementInput = context.ReadValue<Vector2>();
+        if (!GameManager.instance.isEndGame)
+            movementInput = context.ReadValue<Vector2>();
     }
 
     public void OnMouseMovedX(InputAction.CallbackContext context)
     {
-        cameraMovements.x = context.ReadValue<float>() * sensivityX;
+        if (!GameManager.instance.isEndGame)
+            cameraMovements.x = context.ReadValue<float>() * sensivityX;
     }
 
     public void OnMouseMovedY(InputAction.CallbackContext context)
     {
-        cameraMovements.y -= context.ReadValue<float>() * sensivityY;
-        cameraMovements.y = Mathf.Clamp(cameraMovements.y, -60.0f, 60.0f);
+        if (!GameManager.instance.isEndGame)
+        {
+            cameraMovements.y -= context.ReadValue<float>() * sensivityY;
+            cameraMovements.y = Mathf.Clamp(cameraMovements.y, -60.0f, 60.0f);
+        }
+    }
+
+    public void OnReloadScene(InputAction.CallbackContext context)
+    {
+        GameManager.instance.RestartGame();
     }
 
     // Update is called once per frame

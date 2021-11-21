@@ -14,7 +14,7 @@ public class SpawnerPoolManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SpawnEnemy();
+        
     }
 
     private void SpawnEnemy()
