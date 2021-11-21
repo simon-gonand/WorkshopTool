@@ -21,10 +21,12 @@ public class MapProfileEditor : Editor
     {
         serializedObject.Update();
 
+        // Define prefabs
         EditorGUILayout.PropertyField(wallPrefab);
         EditorGUILayout.PropertyField(enemySpawnerPrefab);
         EditorGUILayout.PropertyField(bonusesPrefab);
 
+        // Get Map editor window
         if (GUILayout.Button("OpenWindow"))
         {
             MapProfileWindow window = EditorWindow.GetWindow(typeof(MapProfileWindow)) as MapProfileWindow;

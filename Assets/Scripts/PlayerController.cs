@@ -45,17 +45,21 @@ public class PlayerController : MonoBehaviour
     public void OnFire(InputAction.CallbackContext context)
     {
         if (!GameManager.instance.isEndGame && nextFire < Time.time) {
+            // Define a ray from the screen's centre
             Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0.0f));
             RaycastHit hit;
+
             if (Physics.Raycast(ray, out hit, 999.0f))
             {
-                bulletImpact.transform.position = hit.point;
-                bulletImpact.transform.LookAt(self.position);
+                // If there is an Ethan => kill him
                 if (hit.collider.CompareTag("Enemy"))
                 {
                     hit.collider.GetComponent<EthanBehaviour>().Die();
                 }
 
+                // Play FX
+                bulletImpact.transform.position = hit.point;
+                bulletImpact.transform.LookAt(self.position);
                 bulletImpact.Play();
                 StartCoroutine(Recoil());
             }
@@ -68,6 +72,7 @@ public class PlayerController : MonoBehaviour
         float time = 0.0f;
         while (time < 0.1f)
         {
+            // Set a little recoil camera effect
             float zOffset = Random.Range(0.0f, 0.005f);
             cam.localPosition -= new Vector3(0.0f, 0.0f, zOffset);
             time += Time.deltaTime;
@@ -106,8 +111,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Update player movements
         self.Translate(new Vector3(movementInput.x, 0.0f, movementInput.y) * speed * Time.deltaTime);
 
+        // Update camera rotation
         self.Rotate(Vector3.up * cameraMovements.x);
         cam.localRotation = Quaternion.Euler(cameraMovements.y, 0.0f, 0.0f);
     }

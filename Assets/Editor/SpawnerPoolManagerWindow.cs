@@ -31,7 +31,7 @@ public class SpawnerPoolManagerWindow : EditorWindow
         serializedObject.ApplyModifiedPropertiesWithoutUndo();
         serializedObject.Update();
 
-        // Détruire les objets qui contituaient le pool
+        // Destoy objects that were in the pool
         while (enemies.arraySize > 0)
         {
             SerializedProperty cur = enemies.GetArrayElementAtIndex(0);
@@ -44,6 +44,7 @@ public class SpawnerPoolManagerWindow : EditorWindow
             }
         }
 
+        // Recreate pool
         for (int i = 0; i < poolSize.intValue; ++i)
         {
             GameObject go = PrefabUtility.InstantiatePrefab(enemyPrefab.objectReferenceValue as GameObject) as GameObject;

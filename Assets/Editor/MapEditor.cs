@@ -19,15 +19,21 @@ public class MapEditor : Editor
 
     private void RebuildMap()
     {
+        // Rebuild the map when the profile of the map has been change
         MapProfile mapProfile = profile.objectReferenceValue as MapProfile;
         Transform[] environment = mapScript.gameObject.GetComponentsInChildren<Transform>();
+
+        // Destroy all objects on the map
         foreach (Transform t in environment)
         {
             if (t.GetComponent<Map>()) continue;
             DestroyImmediate(t.gameObject);
         }
+
+        // Recreate objects on the map from the profile
         for (int i = 0; i < mapProfile.cells.Length; ++i)
         {
+            // Get x and y values with the map
             int x = i / mapProfile.height;
             int y = i - (x * mapProfile.height);
             MapProfileWindow.UpdateScene(x, y, mapProfile.cells[i], mapProfile);
@@ -45,6 +51,7 @@ public class MapEditor : Editor
             RebuildMap();
         }
 
+        // Open a window to create a new map profile
         if (GUILayout.Button("Create a Profile"))
         {
             CreateMapProfileWindow window = EditorWindow.GetWindow(typeof(CreateMapProfileWindow)) as CreateMapProfileWindow;

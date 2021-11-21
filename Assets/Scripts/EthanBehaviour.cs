@@ -10,8 +10,6 @@ public class EthanBehaviour : MonoBehaviour
     [SerializeField]
     private Transform self;
     [SerializeField]
-    private Transform attackPoint;
-    [SerializeField]
     private float speed = 1.0f;
     [SerializeField]
     private NavMeshAgent navMesh;
@@ -54,6 +52,7 @@ public class EthanBehaviour : MonoBehaviour
     // Test if the dying animations is ended in order to destroy the object
     private void IsDieAnimationFinished()
     {
+        // Reset to the pool
         if (selfAnimator.GetBehaviours<AnimationFinishedBehaviour>()[0].animationIsFinished)
         {
             selfAnimator.SetBool("IsDead", false);
@@ -64,19 +63,26 @@ public class EthanBehaviour : MonoBehaviour
         }
     }
 
+    // Following path algorithm
     private void SetPathPosition()
     {
+        // Define timer for MoveTowards function
         timer += speed * Time.deltaTime;
+
+        // If ethan has not arrived to the end of the current link that he is crossing
         if (indexLinkPoint < path.links[indexWaypoint].pathPoints.Count)
         {
+            // If ethan has not arrived to the next corner of the current link
             if (self.position != path.links[indexWaypoint].pathPoints[indexLinkPoint])
             {
+                // Move towards the next corner
                 self.position = Vector3.MoveTowards(previousPointPosition, path.links[indexWaypoint].pathPoints[indexLinkPoint],
                     timer);
                 self.LookAt(path.links[indexWaypoint].pathPoints[indexLinkPoint]);
             }
             else
             {
+                // Reset timer + define the next corner to go
                 timer = 0;
                 previousPointPosition = path.links[indexWaypoint].pathPoints[indexLinkPoint];
                 ++indexLinkPoint;
@@ -84,6 +90,7 @@ public class EthanBehaviour : MonoBehaviour
         }
         else
         {
+            // Reset timer + define new link to cross
             timer = 0;
             ++indexWaypoint;
             if (indexWaypoint >= path.links.Count) return;
@@ -104,6 +111,7 @@ public class EthanBehaviour : MonoBehaviour
 
     IEnumerator Attack()
     {
+        // Define a little timer to avoid the player to be dead when he is closed an Ethan
         yield return new WaitForSeconds(0.5f);
         Collider[] hits = Physics.OverlapSphere(self.position, 1.0f);
         // Select a random attack animation
@@ -113,8 +121,6 @@ public class EthanBehaviour : MonoBehaviour
         // Update animator
         selfAnimator.SetTrigger("Attack");
 
-        // Enemy cannot move when he's attacking
-        currentSpeed = 0.0f;
         foreach (Collider hit in hits)
         {
             if (hit.CompareTag("PlayerController"))
@@ -123,8 +129,8 @@ public class EthanBehaviour : MonoBehaviour
             }
         }
 
+        // Start cooldown between two attacks
         canAttack = false;
-        currentSpeed = speed;
         yield return new WaitForSeconds(2.5f);
         canAttack = true;
     }
@@ -134,6 +140,7 @@ public class EthanBehaviour : MonoBehaviour
     {
         if (isEnable && !GameManager.instance.isEndGame)
         {
+            // While Ethan does not finish the current path
             if (indexWaypoint < path.links.Count)
             {
                 selfAnimator.SetFloat("Speed", currentSpeed);
@@ -141,17 +148,19 @@ public class EthanBehaviour : MonoBehaviour
             }
             else
             {
+                // Go to the player automatically
                 navMesh.SetDestination(PlayerController.instance.self.position);
                 navMesh.speed = currentSpeed;
             }
+
+            // If player is near => attack
             if (PlayerIsNear() && canAttack)
             {
                 self.LookAt(PlayerController.instance.self.position);
-                StartCoroutine(Attack());
-                
-                
+                StartCoroutine(Attack());              
             }
 
+            // Check if ethan is dead
             IsDieAnimationFinished();
         }
             

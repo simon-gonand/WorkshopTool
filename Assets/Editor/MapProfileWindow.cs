@@ -36,6 +36,7 @@ public class MapProfileWindow : EditorWindow
 
     void ProcessEvents()
     {
+        // Get if the user is pressing the mouse button
         if (Event.current.type == EventType.MouseDown)
             isClick = true;
         else if (Event.current.type == EventType.MouseUp)
@@ -44,6 +45,7 @@ public class MapProfileWindow : EditorWindow
 
     private void CheckToggleStates()
     {
+        // Create toggles to create different blocks
         if (isVoid && currentProfile.currentCellType != CellType.Void)
         {
             currentProfile.currentCellType = CellType.Void;
@@ -91,6 +93,7 @@ public class MapProfileWindow : EditorWindow
 
     private void ResetSpawnerPlayerCell()
     {
+        // It exists only one player spawn position
         for (int i = 0; i < currentProfile.cells.Length; ++i)
         {
             if (currentProfile.cells[i] == CellType.SpawnerPlayer)
@@ -105,6 +108,7 @@ public class MapProfileWindow : EditorWindow
 
     private static Vector3 GetPositionOnScene(int i, int j, MapProfile currentProfile)
     {
+        // Return the position from the grid in the scene
         int originX = i - currentProfile.width / 2;
         int originY = -j + currentProfile.height / 2;
         return new Vector3(originX + 0.5f, 0.0f, originY - 0.5f);
@@ -112,14 +116,18 @@ public class MapProfileWindow : EditorWindow
 
     public static void UpdateScene(int i, int j, CellType cellType, MapProfile currentProfile)
     {
+        // Get scene position of the object that the user wants to update
         Vector3 position = GetPositionOnScene(i, j, currentProfile);
         GameObject map = (Object.FindObjectOfType<Map>() as Map).gameObject;
         Transform[] environments = map.GetComponentsInChildren<Transform>();
+
+        // Check in the cells the ones that is in the current position
         bool canInstantiate = true;
         foreach (Transform t in environments)
         {
             if (Mathf.Approximately(t.position.x, position.x) && Mathf.Approximately(t.position.z, position.z))
             {
+                // If the cell is different of the user is selecting void => destroy
                 if (cellType != currentProfile.cells[j * currentProfile.height + i] 
                     || cellType == CellType.Void)
                 {
@@ -129,9 +137,11 @@ public class MapProfileWindow : EditorWindow
                     canInstantiate = false;
             }
         }
+
         GameObject obj = null;
         if (canInstantiate)
         {
+            // According the cell type that has been selecting by the user create the correct object
             switch (cellType)
             {
                 case CellType.Wall:
@@ -204,7 +214,7 @@ public class MapProfileWindow : EditorWindow
             {
                 Rect cell = new Rect(curX, curY, cellWidth, cellHeight);
                 int index = j * currentProfile.height + i;
-                // If user is clicking on one cell then he is 
+                // If user is clicking on one cell then he is updating the grid and the scene
                 if (isClick && cell.Contains(Event.current.mousePosition))
                 {
                     if (currentProfile.currentCellType == CellType.SpawnerPlayer && 

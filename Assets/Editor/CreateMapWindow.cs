@@ -22,10 +22,13 @@ public class CreateMapWindow : EditorWindow
 
         width = EditorGUILayout.IntField(new GUIContent("Width", "Define the width of the level grid"), width);
         height = EditorGUILayout.IntField(new GUIContent("Height", "Define the height of the level grid"), height);
+
         if (GUILayout.Button("Create Map"))
         {
+            // Create a map on the scene or resize it according to the values
             if (width <= 0 || height <= 0) return;
             if (prefabReference != null) {
+                // If there is no map on the scene alread => create it
                 Map script = Object.FindObjectOfType(typeof(Map)) as Map;
                 GameObject go;
                 if (script == null) { 
@@ -35,6 +38,7 @@ public class CreateMapWindow : EditorWindow
 
                     Undo.RegisterCreatedObjectUndo(go, "Create map");
                 }
+                // Or update it if it already exists
                 else
                 {
                     go = script.gameObject;

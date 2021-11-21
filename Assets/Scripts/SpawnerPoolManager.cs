@@ -26,6 +26,7 @@ public class SpawnerPoolManager : MonoBehaviour
 
     public EthanBehaviour GetFreeElement()
     {
+        // Check if there is a free ethan to be spawned
         for (int i = 0; i < enemies.Length; ++i)
         {
             if (!enemies[i].isEnable)
@@ -37,6 +38,7 @@ public class SpawnerPoolManager : MonoBehaviour
 
     IEnumerator Timer()
     {
+        // Cooldown between two ethan spawn
         canEnemySpawn = false;
         yield return new WaitForSeconds(enemySpawnRate);
         canEnemySpawn = true;

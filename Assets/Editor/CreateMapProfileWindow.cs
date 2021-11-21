@@ -11,6 +11,7 @@ public class CreateMapProfileWindow : EditorWindow
     private Map mapScript;
     private SerializedObject serializedObject;
     private SerializedProperty profile;
+
     public void InitializeWindow(Map map, SerializedObject sobj)
     {
         mapScript = map;
@@ -23,6 +24,8 @@ public class CreateMapProfileWindow : EditorWindow
         serializedObject.Update();
         GUILayout.BeginHorizontal();
         path = EditorGUILayout.TextField(new GUIContent("Path", "Where to save profile"), path);
+
+        // Let the user select a folder
         if (GUILayout.Button("Folder", EditorStyles.miniButton))
         {
             path = EditorUtility.OpenFolderPanel("Path", "Assets", "");
@@ -41,18 +44,23 @@ public class CreateMapProfileWindow : EditorWindow
 
         if (GUILayout.Button("Create Profile"))
         {
+            // Create the new map profile and initialize values
             MapProfile newProfile = ScriptableObject.CreateInstance<MapProfile>();
             newProfile.width = (int)mapScript.transform.lossyScale.x;
             newProfile.height = (int)mapScript.transform.lossyScale.z;
             newProfile.cells = new CellType[newProfile.width * newProfile.height];
             newProfile.cellTypeColors = new Color[5] { Color.white, Color.black, Color.red, Color.cyan, Color.yellow };
+
+            // Set as the current selected profile for the map
             profile.objectReferenceValue = newProfile;
+
             if (profileName == "")
             {
                 Debug.LogWarning("Profile does not have a name");
             }
             else
             {
+                // Save it into the selected path
                 if (path == "")
                     AssetDatabase.CreateAsset(newProfile, "Assets/" + profileName + ".asset");
                 else
